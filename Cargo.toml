@@ -1,0 +1,6 @@
+[package]
+name = "from-ascii"
+version = "0.0.1"
+authors = ["Fedor Gogolev <knsd@knsd.net>"]
+
+[dependencies]
