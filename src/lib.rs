@@ -30,3 +30,17 @@ impl FromAscii for bool {
         }
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_parse_bool() {
+        assert_eq!(bool::from_ascii(b"true"), Ok(true));
+        assert_eq!(bool::from_ascii(b"false"), Ok(false));
+        assert_eq!(bool::from_ascii(b""), Err(ParseBoolError::ParseBoolError));
+        assert_eq!(bool::from_ascii(b"true "), Err(ParseBoolError::ParseBoolError));
+        assert_eq!(bool::from_ascii(b"false "), Err(ParseBoolError::ParseBoolError));
+    }
+}
