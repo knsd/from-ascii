@@ -31,6 +31,51 @@ impl FromAscii for bool {
     }
 }
 
+#[inline]
+pub fn dec_to_digit(c: u8) -> Option<u8> {
+    let val = match c {
+        b'0' ... b'9' => c - b'0',
+        _ => return None,
+    };
+    Some(val)
+}
+
+#[inline]
+pub fn from_bytes(src: &[u8]) -> Option<i64> {
+    if src.is_empty() {
+        return None;
+    }
+
+    let (is_positive, digits) = match src[0] {
+        b'+' => (true, &src[1..]),
+        b'-' => (false, &src[1..]),
+        _ => (true, src)
+    };
+
+    if digits.is_empty() {
+        return None;
+    }
+
+    let mut result = 0;
+
+    if is_positive {
+        for &c in digits {
+            result = result * 10 + match dec_to_digit(c) {
+                Some(x) => x as i64,
+                None => return None,
+            };
+        }
+    } else {
+        for &c in digits {
+            result = result * 10 - match dec_to_digit(c) {
+                Some(x) => x as i64,
+                None => return None,
+            };
+        }
+    }
+    Some(result)
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
