@@ -21,7 +21,7 @@ pub fn dec_to_digit(c: u8) -> Option<u8> {
     Some(val)
 }
 
-macro_rules! impl_helpers {
+macro_rules! implement {
     ($t:ty, $signed: expr) => {
         impl FromStrHelper for $t {
             #[inline]
@@ -86,16 +86,16 @@ macro_rules! impl_helpers {
     }
 }
 
-impl_helpers!(i8, true);
-impl_helpers!(i16, true);
-impl_helpers!(i32, true);
-impl_helpers!(i64, true);
-impl_helpers!(isize, true);
-impl_helpers!(u8, false);
-impl_helpers!(u16, false);
-impl_helpers!(u32, false);
-impl_helpers!(u64, false);
-impl_helpers!(usize, false);
+implement!(i8, true);
+implement!(i16, true);
+implement!(i32, true);
+implement!(i64, true);
+implement!(isize, true);
+implement!(u8, false);
+implement!(u16, false);
+implement!(u32, false);
+implement!(u64, false);
+implement!(usize, false);
 
 #[cfg(test)]
 mod tests {
