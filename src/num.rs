@@ -4,6 +4,7 @@ trait FromStrHelper: {
     fn signed() -> bool;
 }
 
+#[derive(Debug, PartialEq)]
 pub enum ParseIntError {
     Empty,
     InvalidDigit,
@@ -102,3 +103,18 @@ impl_helpers!(u16, false);
 impl_helpers!(u32, false);
 impl_helpers!(u64, false);
 impl_helpers!(usize, false);
+
+
+#[cfg(test)]
+mod tests {
+    use super::super::base::FromAscii;
+    use std::str::{from_utf8};
+
+    #[test]
+    fn test() {
+        assert_eq!(u64::from_ascii(b"1234567890").ok(), Some(1234567890));
+        assert_eq!(from_utf8(b"1234567890").ok().and_then(|x| x.parse::<u64>().ok()), Some(1234567890));
+    }
+
+
+}
