@@ -1,9 +1,5 @@
 use base::{FromAscii};
 
-trait FromStrHelper: {
-    fn signed() -> bool;
-}
-
 #[derive(Debug, PartialEq)]
 pub enum ParseIntError {
     Empty,
@@ -28,6 +24,10 @@ pub fn dec_to_digit(c: u8, radix: u8) -> Option<u8> {
     }
 }
 
+trait FromAsciiHelper: {
+    fn signed() -> bool;
+}
+
 pub trait FromAsciiRadix: Sized {
     type Err;
 
@@ -36,7 +36,7 @@ pub trait FromAsciiRadix: Sized {
 
 macro_rules! implement {
     ($t:ty, $signed: expr) => {
-        impl FromStrHelper for $t {
+        impl FromAsciiHelper for $t {
             #[inline]
             fn signed() -> bool { $signed }
         }
