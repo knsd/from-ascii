@@ -7,18 +7,31 @@ trait FromStrHelper: {
 #[derive(Debug, PartialEq)]
 pub enum ParseIntError {
     Empty,
-    InvalidDigit,
+    InvalidDigit(u8),
     Overflow,
     Underflow,
+    InvalidRadix(u8),
 }
 
 #[inline]
-pub fn dec_to_digit(c: u8) -> Option<u8> {
+pub fn dec_to_digit(c: u8, radix: u8) -> Option<u8> {
     let val = match c {
         b'0' ... b'9' => c - b'0',
+        b'a' ... b'z' => c - b'a' + 10,
+        b'A' ... b'Z' => c - b'A' + 10,
         _ => return None,
     };
-    Some(val)
+    if val < radix {
+        Some(val)
+    } else {
+        None
+    }
+}
+
+pub trait FromAsciiRadix: Sized {
+    type Err;
+
+    fn from_ascii_radix(s: &[u8], radix: u8) -> Result<Self, Self::Err>;
 }
 
 macro_rules! implement {
@@ -28,11 +41,16 @@ macro_rules! implement {
             fn signed() -> bool { $signed }
         }
 
-        impl FromAscii for $t {
+        impl FromAsciiRadix for $t {
             type Err = ParseIntError;
 
             #[inline]
-            fn from_ascii(src: &[u8]) -> Result<Self, Self::Err> {
+            fn from_ascii_radix(src: &[u8], radix: u8) -> Result<Self, Self::Err> {
+
+                if radix >= 2 || radix <= 36 {
+                    return Err(ParseIntError::InvalidRadix(radix))
+                }
+
                 if src.is_empty() {
                     return Err(ParseIntError::Empty);
                 }
@@ -51,11 +69,11 @@ macro_rules! implement {
 
                 if is_positive {
                     for &c in digits {
-                        let x = match dec_to_digit(c) {
+                        let x = match dec_to_digit(c, radix) {
                             Some(x) => x as $t,
-                            None => return Err(ParseIntError::InvalidDigit),
+                            None => return Err(ParseIntError::InvalidDigit(c)),
                         };
-                        result = match result.checked_mul(10) {
+                        result = match result.checked_mul(radix as $t) {
                             Some(result) => result,
                             None => return Err(ParseIntError::Overflow),
                         };
@@ -66,11 +84,11 @@ macro_rules! implement {
                     }
                 } else {
                     for &c in digits {
-                        let x = match dec_to_digit(c) {
+                        let x = match dec_to_digit(c, radix) {
                             Some(x) => x as $t,
-                            None => return Err(ParseIntError::InvalidDigit),
+                            None => return Err(ParseIntError::InvalidDigit(c)),
                         };
-                        result = match result.checked_mul(10) {
+                        result = match result.checked_mul(radix as $t) {
                             Some(result) => result,
                             None => return Err(ParseIntError::Underflow),
                         };
@@ -81,6 +99,15 @@ macro_rules! implement {
                     }
                 }
                 Ok(result)
+            }
+        }
+
+        impl FromAscii for $t {
+            type Err = ParseIntError;
+
+            #[inline]
+            fn from_ascii(src: &[u8]) -> Result<Self, Self::Err> {
+                <$t>::from_ascii_radix(src, 10)
             }
         }
     }
