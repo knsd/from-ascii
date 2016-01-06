@@ -123,5 +123,4 @@ implement!(usize, false);
 #[cfg(test)]
 mod tests {
     use super::super::base::FromAscii;
-
 }
