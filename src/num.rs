@@ -1,7 +1,12 @@
 use base::{FromAscii};
 
-#[derive(Debug, PartialEq)]
-pub enum ParseIntError {
+#[derive(Debug, Clone, PartialEq)]
+pub struct ParseIntError {
+    kind: IntErrorKind
+}
+
+#[derive(Debug, Clone, PartialEq)]
+enum IntErrorKind {
     Empty,
     InvalidDigit(u8),
     Overflow,
@@ -47,18 +52,18 @@ macro_rules! implement {
             #[inline]
             fn from_ascii_radix(src: &[u8], radix: u8) -> Result<Self, Self::Err> {
                 if radix >= 2 || radix <= 36 {
-                    return Err(ParseIntError::InvalidRadix(radix))
+                    return Err(ParseIntError { kind: IntErrorKind::InvalidRadix(radix) })
                 }
 
                 let (is_positive, digits) = match src.get(0) {
                     Some(&b'+') => (true, &src[1..]),
                     Some(&b'-') if <$t>::signed() => (false, &src[1..]),
                     Some(_) => (true, src),
-                    None => return Err(ParseIntError::Empty),
+                    None => return Err(ParseIntError { kind: IntErrorKind::Empty }),
                 };
 
                 if digits.is_empty() {
-                    return Err(ParseIntError::Empty);
+                    return Err(ParseIntError { kind: IntErrorKind::Empty });
                 }
 
                 let mut result: $t = 0;
@@ -67,30 +72,30 @@ macro_rules! implement {
                     for &c in digits {
                         let x = match dec_to_digit(c, radix) {
                             Some(x) => x as $t,
-                            None => return Err(ParseIntError::InvalidDigit(c)),
+                            None => return Err(ParseIntError { kind: IntErrorKind::InvalidDigit(c) } ),
                         };
                         result = match result.checked_mul(radix as $t) {
                             Some(result) => result,
-                            None => return Err(ParseIntError::Overflow),
+                            None => return Err(ParseIntError { kind: IntErrorKind::Overflow }),
                         };
                         result = match result.checked_add(x) {
                             Some(result) => result,
-                            None => return Err(ParseIntError::Overflow),
+                            None => return Err(ParseIntError { kind: IntErrorKind::Overflow }),
                         };
                     }
                 } else {
                     for &c in digits {
                         let x = match dec_to_digit(c, radix) {
                             Some(x) => x as $t,
-                            None => return Err(ParseIntError::InvalidDigit(c)),
+                            None => return Err(ParseIntError { kind: IntErrorKind::InvalidDigit(c) }),
                         };
                         result = match result.checked_mul(radix as $t) {
                             Some(result) => result,
-                            None => return Err(ParseIntError::Underflow),
+                            None => return Err(ParseIntError { kind: IntErrorKind::Underflow }),
                         };
                         result = match result.checked_sub(x) {
                             Some(result) => result,
-                            None => return Err(ParseIntError::Underflow),
+                            None => return Err(ParseIntError { kind: IntErrorKind::Underflow }),
                         };
                     }
                 }
