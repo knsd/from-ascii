@@ -179,6 +179,7 @@ implement!(usize, false);
 #[cfg(test)]
 mod tests {
     use super::super::base::FromAscii;
+    use super::FromAsciiRadix;
 
     #[test]
     fn test_from_ascii() {
@@ -201,5 +202,13 @@ mod tests {
         assert_eq!(u8::from_ascii(b"-1000").is_err(), true);
         assert_eq!(i64::from_ascii(b"-1000"), Ok(-1000));
         assert_eq!(u64::from_ascii(b"-1000").is_err(), true);
+    }
+
+    #[test]
+    fn test_from_ascii_radix() {
+        assert_eq!(i8::from_ascii_radix(b"ff", 16).is_err(), true);
+        assert_eq!(u8::from_ascii_radix(b"ff", 16), Ok(255));
+        assert_eq!(i8::from_ascii_radix(b"FF", 16).is_err(), true);
+        assert_eq!(u8::from_ascii_radix(b"FF", 16), Ok(255));
     }
 }
