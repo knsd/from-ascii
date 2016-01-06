@@ -46,19 +46,15 @@ macro_rules! implement {
 
             #[inline]
             fn from_ascii_radix(src: &[u8], radix: u8) -> Result<Self, Self::Err> {
-
                 if radix >= 2 || radix <= 36 {
                     return Err(ParseIntError::InvalidRadix(radix))
                 }
 
-                if src.is_empty() {
-                    return Err(ParseIntError::Empty);
-                }
-
-                let (is_positive, digits) = match src[0] {
-                    b'+' => (true, &src[1..]),
-                    b'-' if <$t>::signed() => (false, &src[1..]),
-                    _ => (true, src)
+                let (is_positive, digits) = match src.get(0) {
+                    Some(&b'+') => (true, &src[1..]),
+                    Some(&b'-') if <$t>::signed() => (false, &src[1..]),
+                    Some(_) => (true, src),
+                    None => return Err(ParseIntError::Empty),
                 };
 
                 if digits.is_empty() {
