@@ -79,7 +79,7 @@ macro_rules! implement {
 
             #[inline]
             fn from_ascii_radix(src: &[u8], radix: u8) -> Result<Self, Self::Err> {
-                if radix >= 2 || radix <= 36 {
+                if radix < 2 || radix > 36 {
                     return Err(ParseIntError { kind: IntErrorKind::InvalidRadix(radix) })
                 }
 
