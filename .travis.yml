@@ -29,11 +29,16 @@ script:
       travis-cargo test &&
       travis-cargo bench &&
       travis-cargo --only stable doc
+after_success:
+  # upload the documentation from the build with stable (automatically only actually
+  # runs on the master branch, not individual PRs)
+  - travis-cargo --only stable doc-upload
 
 env:
   global:
     # override the default `--features unstable` used for the nightly branch (optional)
     - TRAVIS_CARGO_NIGHTLY_FEATURE=""
+    - secure: "A1f9A5/9Gtyhz2xXt9xuRUE8MC0BDfI1wAFEkCozBP0P6oM35jV4bnImj9UUQ/Y4kL0pjbf05J3jCeGqeSINDVsckZZfwn/dUveN7L/M4eA5S0ZsmozBL8/DR5mjLJd8WVYtPsyDKmkFTawTxghvK3D4dYQqDeSKIF640qhUbqB+31eAyCBP0btpx0uC/x1vFpXzXVcdTYVfFel31IHRwI3tz4HtmDbWo33c25dL+etlgadUejywEXe9xiBeFb1bWbLC8zke1J3oLKVYAnkvNbnaNQ00xQtgXiyN74GSVxT1li965BVJ66LBWS9SzHD41bio6I0sp4tsevwVm6ffYfersUL3YJoNUG/fXd3zQQhJ6kJwsyzyqtHR8pBH+/frekH+PYTadabCkZ7E/Arh5I3l9aGbug6zeGDFq0bKYo2tLWa9BwPFdahAClufgvb/xAq9HoRPGiepNw6vZwy3ojHGdJiZEB0MK98Ok7sJneBFeLoAUctjkkowTvhXEXhaPY4plKcuO8gbkK/EIq3jRTa+Y8XiFDrKOh0hwIyDz7QHsC5J2UmsOr6L1s64ZMbfIJNLj5zXDMF3N4hw2E9UyPneaVfFCOpQKoYrCX1uIJgf5hum2h0PzgfEV0RSsPOqt0EHPWWAzaSAALoBD9Xb1m65lEkX4zyooY4fSJrXy4k="
 
 notifications:
     webhooks:
