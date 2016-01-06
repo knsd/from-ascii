@@ -61,9 +61,32 @@ trait FromAsciiHelper: {
     fn signed() -> bool;
 }
 
+/// A trait to abstract the idea of creating a new instance of a numeric type from a
+/// ascii string with given radix.
+///
+/// It's a near clone of standard `FromStr` trait.
 pub trait FromAsciiRadix: Sized {
+    /// The associated error which can be returned from parsing.
     type Err;
 
+    /// Parses a ascii string `s` to return a value of this type.
+    ///
+    /// If parsing succeeds, return the value inside `Ok`, otherwise
+    /// when the string is ill-formatted return an error specific to the
+    /// inside `Err`. The error type is specific to implementation of the trait.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage with `i32`, a type that implements `FromAsciiRadix`:
+    ///
+    /// ```
+    /// use from_ascii::FromAsciiRadix;
+    ///
+    /// let s = b"FA";
+    /// let x = i32::from_ascii_radix(s, 16).unwrap();
+    ///
+    /// assert_eq!(250, x);
+    /// ```
     fn from_ascii_radix(s: &[u8], radix: u8) -> Result<Self, Self::Err>;
 }
 
