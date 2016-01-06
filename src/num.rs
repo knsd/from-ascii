@@ -179,4 +179,27 @@ implement!(usize, false);
 #[cfg(test)]
 mod tests {
     use super::super::base::FromAscii;
+
+    #[test]
+    fn test_from_ascii() {
+        assert_eq!(i8::from_ascii(b"10"), Ok(10));
+        assert_eq!(u8::from_ascii(b"10"), Ok(10));
+        assert_eq!(i64::from_ascii(b"10"), Ok(10));
+        assert_eq!(u64::from_ascii(b"10"), Ok(10));
+
+        assert_eq!(i8::from_ascii(b"-10"), Ok(-10));
+        assert_eq!(u8::from_ascii(b"-10").is_err(), true);
+        assert_eq!(i64::from_ascii(b"-10"), Ok(-10));
+        assert_eq!(u64::from_ascii(b"-10").is_err(), true);
+
+        assert_eq!(i8::from_ascii(b"1000").is_err(), true);
+        assert_eq!(u8::from_ascii(b"1000").is_err(), true);
+        assert_eq!(i64::from_ascii(b"1000"), Ok(1000));
+        assert_eq!(u64::from_ascii(b"1000"), Ok(1000));
+
+        assert_eq!(i8::from_ascii(b"-1000").is_err(), true);
+        assert_eq!(u8::from_ascii(b"-1000").is_err(), true);
+        assert_eq!(i64::from_ascii(b"-1000"), Ok(-1000));
+        assert_eq!(u64::from_ascii(b"-1000").is_err(), true);
+    }
 }
