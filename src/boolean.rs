@@ -4,8 +4,13 @@ use base::{FromAscii};
 
 /// An error returned when parsing a `bool` from a ascii string fails.
 #[derive(Debug, Clone, PartialEq)]
-pub enum ParseBoolError {
-    ParseBoolError
+pub struct ParseBoolError {
+    kind: BoolErrorKind
+}
+
+#[derive(Debug, Clone, PartialEq)]
+enum BoolErrorKind {
+    BoolErrorKind
 }
 
 impl fmt::Display for ParseBoolError {
@@ -22,7 +27,7 @@ impl FromAscii for bool {
         match s {
             b"true"  => Ok(true),
             b"false" => Ok(false),
-            _       => Err(ParseBoolError::ParseBoolError),
+            _       => Err(ParseBoolError { kind: BoolErrorKind::BoolErrorKind }),
         }
     }
 }
