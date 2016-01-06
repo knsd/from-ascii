@@ -1,3 +1,6 @@
+use std::error::{Error};
+use std::fmt;
+
 use base::{FromAscii};
 
 #[derive(Debug, Clone, PartialEq)]
@@ -12,6 +15,30 @@ enum IntErrorKind {
     Overflow,
     Underflow,
     InvalidRadix(u8),
+}
+
+impl IntErrorKind {
+    fn description(&self) -> &str {
+        match self {
+            &IntErrorKind::Empty => "cannot parse integer from empty string",
+            &IntErrorKind::InvalidDigit(_) => "invalid digit found in string",
+            &IntErrorKind::Overflow => "number too large to fit in target type",
+            &IntErrorKind::Underflow => "number too small to fit in target type",
+            &IntErrorKind::InvalidRadix(_) => "radix should be in 2..36 range",
+        }
+    }
+}
+
+impl fmt::Display for ParseIntError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.kind.description().fmt(f)
+    }
+}
+
+impl Error for ParseIntError {
+    fn description(&self) -> &str {
+        self.kind.description()
+    }
 }
 
 #[inline]
