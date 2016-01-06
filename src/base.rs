@@ -1,5 +1,7 @@
 /// A trait to abstract the idea of creating a new instance of a type from a
-/// ascii string. It's a near clone of standard `FromStr` trait.
+/// ascii string.
+///
+/// It's a near clone of standard `FromStr` trait.
 pub trait FromAscii: Sized {
     /// The associated error which can be returned from parsing.
     type Err;
