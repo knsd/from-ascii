@@ -1,4 +1,5 @@
 use std::fmt;
+use std::error::{Error};
 
 use base::{FromAscii};
 
@@ -11,6 +12,12 @@ pub struct ParseBoolError {
 #[derive(Debug, Clone, PartialEq)]
 enum BoolErrorKind {
     BoolErrorKind
+}
+
+impl Error for ParseBoolError {
+    fn description(&self) -> &str {
+        "failed to parse bool"
+    }
 }
 
 impl fmt::Display for ParseBoolError {
