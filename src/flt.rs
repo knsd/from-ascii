@@ -23,7 +23,7 @@ impl Error for ParseFloatError {
 }
 
 impl From<num::ParseFloatError> for ParseFloatError {
-    fn from(t: num::ParseFloatError) -> ParseFloatError {
+    fn from(_: num::ParseFloatError) -> ParseFloatError {
         ParseFloatError { kind: FloatErrorKind::FloatErrorKind }
     }
 }
