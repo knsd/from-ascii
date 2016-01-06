@@ -5,6 +5,7 @@ use std::str::{from_utf8_unchecked};
 
 use base::{FromAscii};
 
+/// An error returned when parsing a floating value from a ascii string fails.
 #[derive(Debug, Clone, PartialEq)]
 pub struct ParseFloatError {
     kind: FloatErrorKind

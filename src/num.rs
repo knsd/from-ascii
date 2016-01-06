@@ -3,6 +3,7 @@ use std::fmt;
 
 use base::{FromAscii};
 
+/// An error returned when parsing a numeric value from a ascii string fails.
 #[derive(Debug, Clone, PartialEq)]
 pub struct ParseIntError {
     kind: IntErrorKind
