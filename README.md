@@ -14,8 +14,8 @@ extern crate from_ascii;
 use from_ascii::{FromAscii, FromAsciiRadix};
 
 fn main() {
-    println!("{}", f64::from_ascii(b"123.456"));
-    println!("{}", i16::from_ascii_radix(b"FF", 16));
+    println!("{:?}", f64::from_ascii(b"123.456"));
+    println!("{:?}", i16::from_ascii_radix(b"FF", 16));
 }
 
 ```
