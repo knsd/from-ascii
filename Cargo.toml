@@ -1,6 +1,10 @@
 [package]
 name = "from-ascii"
 version = "0.0.1"
+license = "MIT"
 authors = ["Fedor Gogolev <knsd@knsd.net>"]
-
-[dependencies]
+repository = "https://github.com/knsd/from-ascii/"
+documentation = "http://knsd.github.io/from-ascii/"
+readme = "README.md"
+description = "Traits which creates instances from ascii string."
+keywords = ["ascii", "parser", "parsing", "numerics"]
